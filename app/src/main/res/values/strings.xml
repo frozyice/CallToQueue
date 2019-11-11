@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Queue Manager</string>
+    <string name="next">NEXT!</string>
+    <string name="recall">Recall Current</string>
+    <string name="qClosed">Queue Closed</string>
+    <string name="qOpen">Queue Open</string>
+</resources>
