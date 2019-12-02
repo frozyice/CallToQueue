@@ -21,16 +21,6 @@
         android:textStyle="bold" />
 
 
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ellipsize="start"
-        android:scrollbarSize="@android:dimen/thumbnail_height"
-        android:switchTextAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textSize="8sp"
-        tools:text="Acepting new People" />
-
     <ToggleButton
         android:id="@+id/toggleButton"
         android:layout_width="match_parent"

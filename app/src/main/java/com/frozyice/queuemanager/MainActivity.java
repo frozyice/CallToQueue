@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     TempClass numberObj=new TempClass(55); //debug
-    Settings settings=new Settings();
+    Settings settings;
 
 
 
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+        settings = new Settings();
         toggleButton = findViewById(R.id.toggleButton);
         listView = findViewById(R.id.ListView);
         textViewCurrent = findViewById(R.id.textViewCurrent);
@@ -157,7 +157,8 @@ public class MainActivity extends AppCompatActivity {
             removeFromList();
         }
         else
-            Toast.makeText(context, "No people in queue!", Toast.LENGTH_LONG).show();
+            updateDebug();
+            //Toast.makeText(context, "No people in queue!", Toast.LENGTH_LONG).show();
 
     }
 
@@ -172,12 +173,7 @@ public class MainActivity extends AppCompatActivity {
     public void onSettings(View view) {
         // In activity or fragment
 
-        //debug logic
-        if (settings.getIsAcceptingNewPersons())
-        {
-            settings.setAcceptingNewPersons(false);
-        }
-        else settings.setAcceptingNewPersons(true);
+
 
 // using context and next component class to create intent
         Intent intent = new Intent(this, SettingsActivity.class);
@@ -187,5 +183,36 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent,42);
     }
 
+    public void updateDebug()
+    {
+        textViewCurrent.setText(String.valueOf(settings.getIsAcceptingNewPersons()));
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 42)
+        {
+            Log.wtf("PrintOut", "requestCode OK!"); //debug
+            if (resultCode == RESULT_OK)
+            {
+                Log.wtf("PrintOut", "resultCode OK!"); //debug
+
+                Bundle bundle = data.getExtras();
+
+                if (bundle!=null)
+                {
+                    Log.wtf("PrintOut", "settings is not null"); //debug
+                    settings = (Settings) bundle.getSerializable("settingsBack");
+                    textViewCurrent.setText(String.valueOf(settings.getIsAcceptingNewPersons()));
+                }
+
+
+                else    Log.wtf("PrintOut", "settings is null"); //debug
+
+            }
+            else Log.wtf("PrintOut", "resultCode notOK!"); //debug
+        }
+    }
 }
