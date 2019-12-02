@@ -1,10 +1,12 @@
 package com.frozyice.queuemanager;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +14,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -37,13 +40,22 @@ public class MainActivity extends AppCompatActivity {
     String currentPhonenumber;
     private TextView textViewCurrent;
     private ToggleButton toggleButton;
-    boolean isOpen = true;
+
+
+    TempClass numberObj=new TempClass(55); //debug
+    Settings settings=new Settings();
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        Log.wtf("PrintOut", "this is my test"); //debug
+
+
 
 
         toggleButton = findViewById(R.id.toggleButton);
@@ -156,6 +168,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    public void onSettings(View view) {
+        // In activity or fragment
+
+        //debug logic
+        if (settings.getIsAcceptingNewPersons())
+        {
+            settings.setAcceptingNewPersons(false);
+        }
+        else settings.setAcceptingNewPersons(true);
+
+// using context and next component class to create intent
+        Intent intent = new Intent(this, SettingsActivity.class);
+// using putExtra(String key, Serializable value) method
+        intent.putExtra("settings", settings);
+        //startActivity(intent);
+        startActivityForResult(intent,42);
+    }
 
 
 }

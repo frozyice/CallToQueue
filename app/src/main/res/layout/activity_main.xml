@@ -40,6 +40,16 @@
         android:textColor="@color/white"
         android:onClick="onRecall"/>
 
+    <Button
+        android:id="@+id/btnSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="@string/settings"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/white"
+        android:onClick="onSettings"/>
+
     <ListView
         android:id="@+id/ListView"
         android:layout_width="match_parent"
