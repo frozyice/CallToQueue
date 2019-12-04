@@ -23,43 +23,28 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         settings = (Settings) getIntent().getSerializableExtra("settings");
         textView = findViewById(R.id.textViewCurrent);
-        textView.setText(String.valueOf(settings.getIsAcceptingNewPersons()));
 
         toggleButton = findViewById(R.id.toggleButton);
-        if (settings.getIsAcceptingNewPersons())
+        if (settings.IsAcceptingNewPersons())
             toggleButton.setChecked(true);
         else toggleButton.setChecked(false);
 
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
                 if (isChecked)
-                {
-                    //enabled
                     settings.setAcceptingNewPersons(true);
-                    textView.setText(String.valueOf(settings.getIsAcceptingNewPersons()));
-                }
                 else
-                {
                     settings.setAcceptingNewPersons(false);
-                    textView.setText(String.valueOf(settings.getIsAcceptingNewPersons()));
-                    //disabled
-                }
             }
         });
 
     }
 
-    //TODO: toggle button
-
-
-
     public void onReturn(View view) {
-        Intent intent = new Intent();
-        intent.putExtra("settingsBack", settings);
-        setResult(RESULT_OK,intent);
-        finish();
+        moveBackToMain();
     }
 
     @Override

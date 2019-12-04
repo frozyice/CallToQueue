@@ -6,7 +6,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,14 +13,18 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
+
+import com.android.internal.telephony.ITelephony;
+
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,45 +33,38 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 0;
 
 
-
     Context context;
-    BroadcastReceiver Reciver;
+    BroadcastReceiver Receiver;
     String phoneNumber;
 
     private ListView listView;
-    private List<String> phonenumbersList;
-    String currentPhonenumber;
+    private List<String> phoneNumbersList;
+    String currentPhoneNumber;
     private TextView textViewCurrent;
-    private ToggleButton toggleButton;
 
-
-    TempClass numberObj=new TempClass(55); //debug
     Settings settings;
 
 
-
+    //-- LIFE CYCLE --
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        Log.wtf("PrintOut", "this is my test"); //debug
-
-
+        Log.wtf("PrintOut", "onCreate"); //debug
 
         settings = new Settings();
-        toggleButton = findViewById(R.id.toggleButton);
         listView = findViewById(R.id.ListView);
         textViewCurrent = findViewById(R.id.textViewCurrent);
-        phonenumbersList = new ArrayList<>();
+        phoneNumbersList = new ArrayList<>();
         context = this;
 
         checkAndRequestPermissions();
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("service.to.activity.transfer");
-        Reciver = new BroadcastReceiver() {
+        Receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent != null) {
@@ -76,21 +72,43 @@ public class MainActivity extends AppCompatActivity {
                     if (intent.getStringExtra("number")!=null)
                     {
 
-
                         phoneNumber=intent.getStringExtra("number");
-                        //if isAcceptingNewPeople == true
-
-                        addToList(phoneNumber);
-                        //else
-                        //sendSms(phoneNumber,"not accepting");
+                        if (settings.IsAcceptingNewPersons())
+                        {
+                            addToList(phoneNumber);
+                            endCurrentCall();
+                        }
+                        else
+                            sendSms(phoneNumber,"not accepting");
                     }
                 }
             }
         };
-        registerReceiver(Reciver, filter);
+        registerReceiver(Receiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(context, "App is closed", Toast.LENGTH_LONG).show();
     }
 
 
+
+    private void endCurrentCall() {
+        try {
+            TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+            Class clazz = Class.forName(telephonyManager.getClass().getName());
+            Method method = clazz.getDeclaredMethod("getITelephony");
+            method.setAccessible(true);
+            ITelephony telephonyService = (ITelephony) method.invoke(telephonyManager);
+            telephonyService.endCall();
+        }
+
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
 
     private boolean checkAndRequestPermissions() {
@@ -122,19 +140,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void removeFromList() {
-        phonenumbersList.remove(0);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, phonenumbersList);
+        phoneNumbersList.remove(0);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, phoneNumbersList);
         listView.setAdapter(adapter);
     }
 
     private void addToList(String phoneNumber) {
 
-        if (!phonenumbersList.contains(phoneNumber)) {
-            phonenumbersList.add(phoneNumber);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, phonenumbersList);
+        if (!phoneNumbersList.contains(phoneNumber)) {
+            phoneNumbersList.add(phoneNumber);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, phoneNumbersList);
             listView.setAdapter(adapter);
             Toast.makeText(context, phoneNumber+ " added to queue!", Toast.LENGTH_LONG).show();
-            sendSms(phoneNumber,"Added to queue! There are "+ String.valueOf(phonenumbersList.size()-1)+ " people before You.");
+            sendSms(phoneNumber,"Added to queue! There are "+ (phoneNumbersList.size()-1)+ " people before You.");
         }
         else sendSms(phoneNumber,"Already in queue! Keep Calm!");
     }
@@ -149,43 +167,30 @@ public class MainActivity extends AppCompatActivity {
 
     public void onNext(View view) {
 
-        if (!phonenumbersList.isEmpty()) {
-            sendSms(phonenumbersList.get(0), "Your up! It is your turn now!");
+        if (!phoneNumbersList.isEmpty()) {
+            sendSms(phoneNumbersList.get(0), "Your up! It is your turn now!");
             Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
-            currentPhonenumber = phonenumbersList.get(0);
-            textViewCurrent.setText("Current person: " + currentPhonenumber);
+            currentPhoneNumber = phoneNumbersList.get(0);
+            textViewCurrent.setText("Current person: " + currentPhoneNumber);
             removeFromList();
         }
         else
-            updateDebug();
-            //Toast.makeText(context, "No people in queue!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "No people in queue!", Toast.LENGTH_LONG).show();
 
     }
 
     public void onRecall(View view) {
-        if (currentPhonenumber!=null) {
-            sendSms(currentPhonenumber, "Your up! It is your turn now!");
+        if (currentPhoneNumber!=null) {
+            sendSms(currentPhoneNumber, "Your up! It is your turn now!");
             Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
         }
     }
 
 
     public void onSettings(View view) {
-        // In activity or fragment
-
-
-
-// using context and next component class to create intent
         Intent intent = new Intent(this, SettingsActivity.class);
-// using putExtra(String key, Serializable value) method
         intent.putExtra("settings", settings);
-        //startActivity(intent);
         startActivityForResult(intent,42);
-    }
-
-    public void updateDebug()
-    {
-        textViewCurrent.setText(String.valueOf(settings.getIsAcceptingNewPersons()));
     }
 
     @Override
@@ -194,25 +199,19 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 42)
         {
-            Log.wtf("PrintOut", "requestCode OK!"); //debug
             if (resultCode == RESULT_OK)
             {
-                Log.wtf("PrintOut", "resultCode OK!"); //debug
 
                 Bundle bundle = data.getExtras();
 
                 if (bundle!=null)
                 {
-                    Log.wtf("PrintOut", "settings is not null"); //debug
                     settings = (Settings) bundle.getSerializable("settingsBack");
-                    textViewCurrent.setText(String.valueOf(settings.getIsAcceptingNewPersons()));
                 }
-
-
-                else    Log.wtf("PrintOut", "settings is null"); //debug
-
             }
-            else Log.wtf("PrintOut", "resultCode notOK!"); //debug
         }
+
     }
+
+
 }

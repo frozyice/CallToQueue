@@ -9,7 +9,7 @@ public class Settings implements Serializable{
         IsAcceptingNewPersons=false;
     }
 
-    public boolean getIsAcceptingNewPersons() {
+    public boolean IsAcceptingNewPersons() {
         return IsAcceptingNewPersons;
     }
 
