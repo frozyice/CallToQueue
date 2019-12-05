@@ -22,14 +22,24 @@
 
 
     <ToggleButton
-        android:id="@+id/toggleButton"
+        android:id="@+id/toggleQueue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="ToggleButton"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textOff="Queue Closed"
+        android:textOn="Queue Open" />
+
+    <ToggleButton
+        android:id="@+id/toggleEndCalls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checked="true"
         android:text="ToggleButton"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textOff="Queue Closed"
-        android:textOn="Queue Open" />
+        android:textOff="Not Canceling Calls"
+        android:textOn="Canceling Calls" />
 
     <Button
         android:id="@+id/btnreturn"

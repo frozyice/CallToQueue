@@ -71,13 +71,14 @@ public class MainActivity extends AppCompatActivity {
                     {
 
                         phoneNumber=intent.getStringExtra("number");
-                        if (settings.IsAcceptingNewPersons())
-                        {
+
+                        if (settings.isAcceptingNewPersons())
                             addToList(phoneNumber);
-                            endCurrentCall();
-                        }
                         else
                             sendSms(phoneNumber,"not accepting");
+
+                        if(settings.isEndingCalls())
+                            endCurrentCall();
                     }
                 }
             }

@@ -9,13 +9,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class SettingsActivity extends AppCompatActivity {
 
     TextView textView;
     Settings settings;
-    ToggleButton toggleButton;
+    ToggleButton toggleQueue;
+    ToggleButton toggleEndCalls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +26,13 @@ public class SettingsActivity extends AppCompatActivity {
         settings = (Settings) getIntent().getSerializableExtra("settings");
         textView = findViewById(R.id.textViewCurrent);
 
-        toggleButton = findViewById(R.id.toggleButton);
-        if (settings.IsAcceptingNewPersons())
-            toggleButton.setChecked(true);
-        else toggleButton.setChecked(false);
+        toggleQueue = findViewById(R.id.toggleQueue);
+        if (settings.isAcceptingNewPersons())
+            toggleQueue.setChecked(true);
+        else
+            toggleQueue.setChecked(false);
 
-        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+        toggleQueue.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
@@ -38,6 +41,22 @@ public class SettingsActivity extends AppCompatActivity {
                     settings.setAcceptingNewPersons(true);
                 else
                     settings.setAcceptingNewPersons(false);
+            }
+        });
+
+        toggleEndCalls = findViewById(R.id.toggleEndCalls);
+        if (settings.isEndingCalls())
+            toggleEndCalls.setChecked(true);
+        else
+            toggleEndCalls.setChecked(false);
+
+        toggleEndCalls.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    settings.setEndingCalls(true);
+                else
+                    settings.setEndingCalls(false);
             }
         });
 
@@ -57,6 +76,7 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtra("settingsBack", settings);
         setResult(RESULT_OK,intent);
+        Toast.makeText(this,"Settings saved!", Toast.LENGTH_LONG).show();
         finish();
     }
 }
