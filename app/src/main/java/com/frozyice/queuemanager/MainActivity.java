@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -25,8 +26,16 @@ import android.widget.Toast;
 import com.android.internal.telephony.ITelephony;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -84,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         registerReceiver(Receiver, filter);
+
 
         gotoSettings();
     }
@@ -148,12 +158,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void addToList(String phoneNumber) {
 
-        if (!phoneNumbersList.contains(phoneNumber)) {
+       if (!phoneNumbersList.contains(phoneNumber)) {
             phoneNumbersList.add(phoneNumber);
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, phoneNumbersList);
             listView.setAdapter(adapter);
             Toast.makeText(context, phoneNumber+ " added to queue!", Toast.LENGTH_LONG).show();
-            sendSms(phoneNumber,"Added to queue! There are "+ (phoneNumbersList.size()-1)+ " people before You.");
+
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            Calendar time = Calendar.getInstance();
+            int interval = settings.getEstimatedQueueTime()*(phoneNumbersList.size()-1);
+            time.add(Calendar.MINUTE, interval);
+            sendSms(phoneNumber,"Added to queue! There are "+ (phoneNumbersList.size()-1)+ " people before You. Your estimated time: "+ (dateFormat.format(time.getTime())));
         }
         else sendSms(phoneNumber,"Already in queue! Keep Calm!");
     }
