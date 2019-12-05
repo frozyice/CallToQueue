@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
     Settings settings;
 
-
-    //-- LIFE CYCLE --
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -85,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         registerReceiver(Receiver, filter);
+
+        gotoSettings();
     }
 
     @Override
@@ -188,6 +188,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onSettings(View view) {
+        gotoSettings();
+    }
+
+    private void gotoSettings(){
         Intent intent = new Intent(this, SettingsActivity.class);
         intent.putExtra("settings", settings);
         startActivityForResult(intent,42);
