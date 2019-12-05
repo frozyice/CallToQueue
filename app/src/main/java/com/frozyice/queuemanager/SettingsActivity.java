@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -18,6 +20,9 @@ public class SettingsActivity extends AppCompatActivity {
     Settings settings;
     ToggleButton toggleQueue;
     ToggleButton toggleEndCalls;
+    EditText editTextQueueTime;
+    boolean hasQueueTimeChanged=false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +65,25 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        editTextQueueTime = findViewById(R.id.editTextQueueTime);
+
+        editTextQueueTime.setText(settings.getEstimatedQueueTime()+" min");
+
+
+        editTextQueueTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus)
+                {
+                    if (editTextQueueTime.getText().toString().length()!=0)
+                    {
+                        editTextQueueTime.setText("");
+                        hasQueueTimeChanged=true;
+                    }
+                }
+            }
+        });
+
     }
 
     public void onReturn(View view) {
@@ -73,6 +97,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void moveBackToMain()
     {
+
+        if (hasQueueTimeChanged && !String.valueOf(editTextQueueTime.getText()).isEmpty())
+        {
+            int queueTime = Integer.valueOf(String.valueOf(editTextQueueTime.getText()));
+            settings.setEstimatedQueueTime(queueTime);
+        }
+
         Intent intent = new Intent();
         intent.putExtra("settingsBack", settings);
         setResult(RESULT_OK,intent);

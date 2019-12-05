@@ -5,4 +5,5 @@
     <string name="qClosed">Queue Closed</string>
     <string name="qOpen">Queue Open</string>
     <string name="settings">settings</string>
+    <string name="save">Save</string>
 </resources>
