@@ -18,9 +18,11 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 
 import com.android.internal.telephony.ITelephony;
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     String currentPhoneNumber;
     private TextView textViewCurrent;
 
+    ToggleButton toggleQueue;
+
     Settings settings;
 
     @Override
@@ -64,8 +68,27 @@ public class MainActivity extends AppCompatActivity {
         settings = new Settings();
         listView = findViewById(R.id.ListView);
         textViewCurrent = findViewById(R.id.textViewCurrent);
+
         phoneNumbersList = new ArrayList<>();
         context = this;
+
+        toggleQueue = findViewById(R.id.toggleQueue);
+        if (settings.isAcceptingNewPersons())
+            toggleQueue.setChecked(true);
+        else
+            toggleQueue.setChecked(false);
+
+        toggleQueue.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (isChecked)
+                    settings.setAcceptingNewPersons(true);
+                else
+                    settings.setAcceptingNewPersons(false);
+            }
+        });
 
         checkAndRequestPermissions();
 
@@ -84,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                         if (settings.isAcceptingNewPersons())
                             addToList(phoneNumber);
                         else
-                            sendSms(phoneNumber,"not accepting");
+                            sendSms(phoneNumber,"Not accepting new people.");
 
                         if(settings.isEndingCalls())
                             endCurrentCall();
@@ -94,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
         };
         registerReceiver(Receiver, filter);
 
-
-        gotoSettings();
     }
 
     @Override
@@ -167,9 +188,10 @@ public class MainActivity extends AppCompatActivity {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
             Calendar time = Calendar.getInstance();
-            int interval = settings.getEstimatedQueueTime()*(phoneNumbersList.size()-1);
+            int peopleBefore = phoneNumbersList.size()-1;
+            int interval = settings.getEstimatedQueueTime()*peopleBefore;
             time.add(Calendar.MINUTE, interval);
-            sendSms(phoneNumber,"Added to queue! There are "+ (phoneNumbersList.size()-1)+ " people before You. Your estimated time: "+ (dateFormat.format(time.getTime())));
+            sendSms(phoneNumber,"Added to queue! There are "+ peopleBefore + " people before You. Your estimated time: "+ (dateFormat.format(time.getTime())));
         }
         else sendSms(phoneNumber,"Already in queue! Keep Calm!");
     }
