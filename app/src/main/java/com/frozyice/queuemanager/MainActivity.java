@@ -1,10 +1,5 @@
 package com.frozyice.queuemanager;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,18 +18,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.internal.telephony.ITelephony;
 
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 
 
@@ -49,13 +41,11 @@ public class MainActivity extends AppCompatActivity {
     String phoneNumber;
 
     private ListView listView;
-    private List<String> phoneNumbersList;
-    String currentPhoneNumber;
     private TextView textViewCurrent;
-
-    ToggleButton toggleQueue;
+    private ToggleButton toggleQueue;
 
     Settings settings;
+    Queue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -66,10 +56,11 @@ public class MainActivity extends AppCompatActivity {
         Log.wtf("PrintOut", "onCreate"); //debug
 
         settings = new Settings();
+        queue = new Queue();
+
         listView = findViewById(R.id.ListView);
         textViewCurrent = findViewById(R.id.textViewCurrent);
 
-        phoneNumbersList = new ArrayList<>();
         context = this;
 
         toggleQueue = findViewById(R.id.toggleQueue);
@@ -94,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("service.to.activity.transfer");
-        Receiver = new BroadcastReceiver() {
+        Receiver =  new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent != null) {
@@ -107,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                         if (settings.isAcceptingNewPersons())
                             addToList(phoneNumber);
                         else
-                            sendSms(phoneNumber,"Not accepting new people.");
+                            sendSms(phoneNumber,"Not accepting new people at the moment.");
 
                         if(settings.isEndingCalls())
                             endCurrentCall();
@@ -124,8 +115,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Toast.makeText(context, "App is closed", Toast.LENGTH_LONG).show();
     }
-
-
 
     private void endCurrentCall() {
         try {
@@ -171,56 +160,57 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void removeFromList() {
-        phoneNumbersList.remove(0);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, phoneNumbersList);
-        listView.setAdapter(adapter);
-    }
 
     private void addToList(String phoneNumber) {
 
-       if (!phoneNumbersList.contains(phoneNumber)) {
-            phoneNumbersList.add(phoneNumber);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, phoneNumbersList);
-            listView.setAdapter(adapter);
+       if (!queue.getPhoneNumbersList().contains(phoneNumber)) {
+            queue.addToPhoneNumbersList(phoneNumber);
+            updateListView();
+
             Toast.makeText(context, phoneNumber+ " added to queue!", Toast.LENGTH_LONG).show();
-
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-            Calendar time = Calendar.getInstance();
-            int peopleBefore = phoneNumbersList.size()-1;
-            int interval = settings.getEstimatedQueueTime()*peopleBefore;
-            time.add(Calendar.MINUTE, interval);
-            sendSms(phoneNumber,"Added to queue! There are "+ peopleBefore + " people before You. Your estimated time: "+ (dateFormat.format(time.getTime())));
+            sendSms(phoneNumber,"Added to queue! There are "+ queue.peopleBefore() + " people before You. Your estimated time: "+ queue.calculateEstimateTime(settings.getUserEstimatedQueueTime()));
         }
         else sendSms(phoneNumber,"Already in queue! Keep Calm!");
     }
 
-
+    private void updateListView()
+    {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, queue.getPhoneNumbersList());
+        listView.setAdapter(adapter);
+    }
 
     private void sendSms(String phoneNumber, String message) {
         SmsManager smgr = SmsManager.getDefault();
-        smgr.sendTextMessage(phoneNumber,null,message,null,null);
+        //smgr.sendTextMessage(phoneNumber,null,message,null,null);
+        System.out.println("SMS: "+message); //debug
     }
 
 
     public void onNext(View view) {
 
-        if (!phoneNumbersList.isEmpty()) {
-            sendSms(phoneNumbersList.get(0), "Your up! It is your turn now!");
+        if (!queue.getPhoneNumbersList().isEmpty()) {
+            queue.removeFromPhoneNumbersList();
+            queue.setNumberOfPeopleCalledIn();
+            queue.setAdaptiveEstimatedQueueTime();
+            queue.setCurrentPhoneNumber(queue.getPhoneNumbersList().get(0));
+            textViewCurrent.setText("Current person: " + queue.getCurrentPhoneNumber());
+            updateListView();
+
             Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
-            currentPhoneNumber = phoneNumbersList.get(0);
-            textViewCurrent.setText("Current person: " + currentPhoneNumber);
-            removeFromList();
+            sendSms(queue.getPhoneNumbersList().get(0), "Your up! It is your turn now!");
+
         }
         else
+        {
             Toast.makeText(context, "No people in queue!", Toast.LENGTH_LONG).show();
+        }
 
     }
 
     public void onRecall(View view) {
-        if (currentPhoneNumber!=null) {
-            sendSms(currentPhoneNumber, "Your up! It is your turn now!");
+        if (queue.getCurrentPhoneNumber()!=null) {
+            queue.setRecallTime();
+            sendSms(queue.getCurrentPhoneNumber(), "Your up! It is your turn now!");
             Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
         }
     }
@@ -244,7 +234,6 @@ public class MainActivity extends AppCompatActivity {
         {
             if (resultCode == RESULT_OK)
             {
-
                 Bundle bundle = data.getExtras();
 
                 if (bundle!=null)

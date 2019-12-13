@@ -67,7 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         editTextQueueTime = findViewById(R.id.editTextQueueTime);
 
-        editTextQueueTime.setText(settings.getEstimatedQueueTime()+" min");
+        editTextQueueTime.setText(settings.getUserEstimatedQueueTime()/60+" min");
 
 
         editTextQueueTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -101,7 +101,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (hasQueueTimeChanged && !String.valueOf(editTextQueueTime.getText()).isEmpty())
         {
             int queueTime = Integer.valueOf(String.valueOf(editTextQueueTime.getText()));
-            settings.setEstimatedQueueTime(queueTime);
+            settings.setUserEstimatedQueueTime(queueTime*60);
         }
 
         Intent intent = new Intent();
