@@ -45,6 +45,7 @@ public class Queue {
     }
 
     public void removeFromPhoneNumbersList() {
+        CurrentPhoneNumber=PhoneNumbersList.get(0);
         PhoneNumbersList.remove(0);
     }
 
@@ -91,11 +92,14 @@ public class Queue {
         LocalTime now = new LocalTime();
 
         //start Queue
-        if (NumberOfPeopleCalledIn == 1)
+        if (NumberOfPeopleCalledIn == 1) {
             QueueStartTime = now;
+        }
 
-        int seconds = (Seconds.secondsBetween(QueueStartTime, now)).getSeconds();
-        if (seconds <= 0)
-            AdaptiveEstimatedQueueTime = seconds / (NumberOfPeopleCalledIn-1);
+        else {
+            int seconds = (Seconds.secondsBetween(QueueStartTime, now)).getSeconds();
+            if (seconds <= 0)
+                AdaptiveEstimatedQueueTime = seconds / (NumberOfPeopleCalledIn - 1);
+        }
     }
 }

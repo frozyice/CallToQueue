@@ -163,14 +163,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void addToList(String phoneNumber) {
 
-       if (!queue.getPhoneNumbersList().contains(phoneNumber)) {
+       //if (!queue.getPhoneNumbersList().contains(phoneNumber)) {
             queue.addToPhoneNumbersList(phoneNumber);
             updateListView();
 
             Toast.makeText(context, phoneNumber+ " added to queue!", Toast.LENGTH_LONG).show();
             sendSms(phoneNumber,"Added to queue! There are "+ queue.peopleBefore() + " people before You. Your estimated time: "+ queue.calculateEstimateTime(settings.getUserEstimatedQueueTime()));
-        }
-        else sendSms(phoneNumber,"Already in queue! Keep Calm!");
+        //}
+        //else sendSms(phoneNumber,"Already in queue! Keep Calm!");
     }
 
     private void updateListView()
@@ -189,15 +189,17 @@ public class MainActivity extends AppCompatActivity {
     public void onNext(View view) {
 
         if (!queue.getPhoneNumbersList().isEmpty()) {
-            queue.removeFromPhoneNumbersList();
-            queue.setNumberOfPeopleCalledIn();
-            queue.setAdaptiveEstimatedQueueTime();
-            queue.setCurrentPhoneNumber(queue.getPhoneNumbersList().get(0));
-            textViewCurrent.setText("Current person: " + queue.getCurrentPhoneNumber());
-            updateListView();
-
             Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
             sendSms(queue.getPhoneNumbersList().get(0), "Your up! It is your turn now!");
+
+            queue.setNumberOfPeopleCalledIn();
+            queue.setAdaptiveEstimatedQueueTime();
+
+            queue.setCurrentPhoneNumber(queue.getPhoneNumbersList().get(0));
+            queue.removeFromPhoneNumbersList();
+
+            textViewCurrent.setText("Current person: " + queue.getCurrentPhoneNumber());
+            updateListView();
 
         }
         else
