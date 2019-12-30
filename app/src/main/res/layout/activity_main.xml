@@ -65,6 +65,13 @@
         android:textColor="@color/white"
         android:onClick="onSettings"/>
 
+    <Button
+        android:id="@+id/btnDebug"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="add new customer [debug]"
+        android:onClick="onDebug"/>
+
     <ListView
         android:id="@+id/ListView"
         android:layout_width="match_parent"

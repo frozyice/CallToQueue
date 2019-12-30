@@ -28,7 +28,7 @@ import com.android.internal.telephony.ITelephony;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -163,14 +163,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void addToList(String phoneNumber) {
 
-       //if (!queue.getPhoneNumbersList().contains(phoneNumber)) {
+       if (!queue.getPhoneNumbersList().contains(phoneNumber)) {
             queue.addToPhoneNumbersList(phoneNumber);
             updateListView();
 
             Toast.makeText(context, phoneNumber+ " added to queue!", Toast.LENGTH_LONG).show();
             sendSms(phoneNumber,"Added to queue! There are "+ queue.peopleBefore() + " people before You. Your estimated time: "+ queue.calculateEstimateTime(settings.getUserEstimatedQueueTime()));
-        //}
-        //else sendSms(phoneNumber,"Already in queue! Keep Calm!");
+        }
+        else sendSms(phoneNumber,"Already in queue! Keep Calm!");
     }
 
     private void updateListView()
@@ -248,4 +248,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void onDebug(View view) {
+
+        settings.setAcceptingNewPersons(true);
+        toggleQueue.setChecked(true);
+        final int random = new Random().nextInt((5598547 - 5564787) + 1) + 5564787;
+        phoneNumber=String.valueOf(random);
+
+
+        addToList(phoneNumber);
+
+        if(settings.isEndingCalls())
+            endCurrentCall();
+    }
 }
