@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
     private void sendSms(String phoneNumber, String message) {
         SmsManager smgr = SmsManager.getDefault();
         //smgr.sendTextMessage(phoneNumber,null,message,null,null);
-        System.out.println("SMS: "+message); //debug
+        System.out.println("[SMS] to: "+phoneNumber+" msg: "+message); //debug
     }
 
 
@@ -197,6 +197,9 @@ public class MainActivity extends AppCompatActivity {
 
             queue.setCurrentPhoneNumber(queue.getPhoneNumbersList().get(0));
             queue.removeFromPhoneNumbersList();
+            if (!queue.getPhoneNumbersList().isEmpty()){
+                sendSms(queue.getPhoneNumbersList().get(0), "Get ready, you are next in queue!");
+            }
 
             textViewCurrent.setText("Current person: " + queue.getCurrentPhoneNumber());
             updateListView();
