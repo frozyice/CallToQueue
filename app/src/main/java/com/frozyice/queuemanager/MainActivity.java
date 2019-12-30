@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(Receiver);
         Toast.makeText(context, "App is closed", Toast.LENGTH_LONG).show();
     }
 
