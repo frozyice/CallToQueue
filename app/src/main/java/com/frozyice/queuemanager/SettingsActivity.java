@@ -21,6 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
     ToggleButton toggleQueue;
     ToggleButton toggleEndCalls;
     EditText editTextQueueTime;
+    EditText editTextAddedToQueue;
     boolean hasQueueTimeChanged=false;
 
 
@@ -84,6 +85,10 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        editTextAddedToQueue = findViewById(R.id.editTextAddedToQueue);
+        editTextAddedToQueue.setText(settings.getTextAddedToQueue("5"));
+
+
     }
 
     public void onReturn(View view) {
@@ -103,6 +108,8 @@ public class SettingsActivity extends AppCompatActivity {
             int queueTime = Integer.valueOf(String.valueOf(editTextQueueTime.getText()));
             settings.setUserEstimatedQueueTime(queueTime*60);
         }
+
+        settings.setTextAddedToQueue(String.valueOf(editTextAddedToQueue.getText()));
 
         Intent intent = new Intent();
         intent.putExtra("settingsBack", settings);

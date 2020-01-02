@@ -1,11 +1,13 @@
 package com.frozyice.queuemanager;
 
 import java.io.Serializable;
+import java.util.StringTokenizer;
 
 public class Settings implements Serializable{
     private boolean IsAcceptingNewPersons;
     private boolean IsEndingCalls;
     private int userEstimatedQueueTime;
+    private String TextAddedToQueue;
     //private int AdaptiveEstimatedQueueTime;
 
     /*
@@ -47,6 +49,7 @@ public class Settings implements Serializable{
         IsAcceptingNewPersons=false;
         IsEndingCalls=true;
         userEstimatedQueueTime=300;
+        TextAddedToQueue = "Added to queue! There are [people] people before You. Your estimated time: [time]";
     }
 
     public boolean isAcceptingNewPersons() {
@@ -73,5 +76,44 @@ public class Settings implements Serializable{
         userEstimatedQueueTime = estimatedQueueTime*60;
     }
 
+    public String getTextAddedToQueue() {
+        return TextAddedToQueue;
+    }
 
+    public String getTextAddedToQueue(String time) {
+
+
+        String text = TextAddedToQueue;
+
+        if (text.contains("[time]"));
+        {
+            //textArray = text.split("\\[",0);
+            //text = Arrays.toString(textArray);
+            //textArray = text.split("\\]");
+            //text = Arrays.toString(textArray);
+            StringTokenizer stringTokenizer = new StringTokenizer(text);
+            text = "";
+
+            //String textOut ="";
+            while (stringTokenizer.hasMoreTokens())
+            {
+                String token = stringTokenizer.nextToken();
+                if (token.equals("[time]"))
+                    text = text+" "+time+" ";
+                else
+                    text = text+token+" ";
+
+                //System.out.print(stringTokenizer.nextToken());
+            }
+
+
+        }
+
+        System.out.println(text);
+        return text;
+    }
+
+    public void setTextAddedToQueue(String textAddedToQueue) {
+        TextAddedToQueue = textAddedToQueue;
+    }
 }

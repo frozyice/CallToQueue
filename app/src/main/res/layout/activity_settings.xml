@@ -66,6 +66,16 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
+    <EditText
+        android:id="@+id/editTextAddedToQueue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+
+
     <Button
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
