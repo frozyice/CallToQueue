@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card">16dp</dimen>
+    <dimen name="card_side">32dp</dimen>
+    <dimen name="card_top">16dp</dimen>
+    <dimen name="card_bottom">16dp</dimen>
+
+    <dimen name="half_card_top">8dp</dimen>
+    <dimen name="half_card_bottom">8dp</dimen>
+
+    <dimen name="card_elevation">4dp</dimen>
+
+
+</resources>

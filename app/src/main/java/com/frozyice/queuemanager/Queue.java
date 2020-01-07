@@ -11,7 +11,7 @@ import java.util.List;
 public class Queue {
 
     private String CurrentPhoneNumber;
-    private List<String> PhoneNumbersList;
+    private List<Card> CardList;
 
     private int NumberOfPeopleCalledIn;
     private int AdaptiveEstimatedQueueTime;
@@ -24,7 +24,7 @@ public class Queue {
     }
 
     public Queue() {
-        PhoneNumbersList = new ArrayList<>();
+        CardList = new ArrayList<>();
         NumberOfPeopleCalledIn = 0;
     }
 
@@ -36,17 +36,32 @@ public class Queue {
         CurrentPhoneNumber = currentPhoneNumber;
     }
 
-    public List<String> getPhoneNumbersList() {
-        return PhoneNumbersList;
+    public List<Card> getCardList() {
+        //return PhoneNumbersList;
+        return CardList;
     }
 
-    public void addToPhoneNumbersList(String phoneNumber) {
-        PhoneNumbersList.add(phoneNumber);
+    public void addToCardList(String phoneNumber) {
+        Card card = new Card(phoneNumber);
+        //card.setPhoneNumber(phoneNumber);
+        CardList.add(card);
+        //PhoneNumbersList.add(phoneNumber);
+    }
+
+    public boolean cardListContains(String phoneNumber) {
+        for (Card card : CardList)
+        {
+            if (card.getPhoneNumber().equals(phoneNumber))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void removeFromPhoneNumbersList() {
-        CurrentPhoneNumber=PhoneNumbersList.get(0);
-        PhoneNumbersList.remove(0);
+        CurrentPhoneNumber=CardList.get(0).getPhoneNumber();
+        CardList.remove(0);
     }
 
     public void setNumberOfPeopleCalledIn() {
@@ -66,9 +81,8 @@ public class Queue {
     }
 
     public int peopleBefore() {
-        return PhoneNumbersList.size() - 1;
+        return CardList.size() - 1;
     }
-
 
     public String calculateEstimateTime(int userEstimatedQueueTime) {
         int seconds;

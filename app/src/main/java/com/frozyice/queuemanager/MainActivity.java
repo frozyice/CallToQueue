@@ -11,17 +11,16 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.internal.telephony.ITelephony;
 
@@ -40,9 +39,8 @@ public class MainActivity extends AppCompatActivity {
     BroadcastReceiver Receiver;
     String phoneNumber;
 
-    private ListView listView;
-    private TextView textViewCurrent;
-    private ToggleButton toggleQueue;
+    private TextView textViewCurrent, textViewNext;
+    private RecyclerView recyclerView;
 
     Settings settings;
     Queue queue;
@@ -58,28 +56,13 @@ public class MainActivity extends AppCompatActivity {
         settings = new Settings();
         queue = new Queue();
 
-        listView = findViewById(R.id.ListView);
         textViewCurrent = findViewById(R.id.textViewCurrent);
+        textViewNext = findViewById(R.id.textViewNext);
+        recyclerView = findViewById(R.id.recyclerView);
+
+
 
         context = this;
-
-        toggleQueue = findViewById(R.id.toggleQueue);
-        if (settings.isAcceptingNewPersons())
-            toggleQueue.setChecked(true);
-        else
-            toggleQueue.setChecked(false);
-
-        toggleQueue.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if (isChecked)
-                    settings.setAcceptingNewPersons(true);
-                else
-                    settings.setAcceptingNewPersons(false);
-            }
-        });
 
         checkAndRequestPermissions();
 
@@ -107,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         registerReceiver(Receiver, filter);
-
     }
 
     @Override
@@ -164,9 +146,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void addToList(String phoneNumber) {
 
-       if (!queue.getPhoneNumbersList().contains(phoneNumber)) {
-            queue.addToPhoneNumbersList(phoneNumber);
-            updateListView();
+        if (!queue.cardListContains(phoneNumber)) {
+            queue.addToCardList(phoneNumber);
+
+            updateView();
 
             Toast.makeText(context, phoneNumber+ " added to queue!", Toast.LENGTH_LONG).show();
             sendSms(phoneNumber,"Added to queue! There are "+ queue.peopleBefore() + " people before You. Your estimated time: "+ queue.calculateEstimateTime(settings.getUserEstimatedQueueTime()));
@@ -174,10 +157,24 @@ public class MainActivity extends AppCompatActivity {
         else sendSms(phoneNumber,"Already in queue! Keep Calm!");
     }
 
-    private void updateListView()
+    private void updateView()
     {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, queue.getPhoneNumbersList());
-        listView.setAdapter(adapter);
+        CardsAdapter adapter = new CardsAdapter(queue.getCardList());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+
+        if (!queue.getCardList().isEmpty())
+        {
+            textViewNext.setText(queue.getCardList().get(0).getPhoneNumber());
+        }
+        else
+        {
+            textViewNext.setText("-");
+        }
+
+        textViewCurrent.setText(queue.getCurrentPhoneNumber());
     }
 
     private void sendSms(String phoneNumber, String message) {
@@ -189,21 +186,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void onNext(View view) {
 
-        if (!queue.getPhoneNumbersList().isEmpty()) {
+        if (!queue.getCardList().isEmpty()) {
             Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
-            sendSms(queue.getPhoneNumbersList().get(0), "Your up! It is your turn now!");
+            sendSms(queue.getCardList().get(0).getPhoneNumber(), "Your up! It is your turn now!");
 
             queue.setNumberOfPeopleCalledIn();
             queue.setAdaptiveEstimatedQueueTime();
 
-            queue.setCurrentPhoneNumber(queue.getPhoneNumbersList().get(0));
+            queue.setCurrentPhoneNumber(queue.getCardList().get(0).getPhoneNumber());
             queue.removeFromPhoneNumbersList();
-            if (!queue.getPhoneNumbersList().isEmpty()){
-                sendSms(queue.getPhoneNumbersList().get(0), "Get ready, you are next in queue!");
+            if (!queue.getCardList().isEmpty()){
+                sendSms(queue.getCardList().get(0).getPhoneNumber(), "Get ready, you are next in queue!");
             }
 
-            textViewCurrent.setText("Current person: " + queue.getCurrentPhoneNumber());
-            updateListView();
+            updateView();
 
         }
         else
@@ -255,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
     public void onDebug(View view) {
 
         settings.setAcceptingNewPersons(true);
-        toggleQueue.setChecked(true);
+        //toggleQueue.setChecked(true);
         final int random = new Random().nextInt((5598547 - 5564787) + 1) + 5564787;
         phoneNumber=String.valueOf(random);
 
