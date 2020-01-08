@@ -3,6 +3,7 @@ package com.frozyice.queuemanager;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -11,6 +12,8 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +26,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.internal.telephony.ITelephony;
+import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textViewCurrent, textViewNext, textViewQueueLength, textViewQueueEnd;
     private RecyclerView recyclerView;
+    private MaterialButtonToggleGroup toggleGroup;
+    private Button btnYes, btnNo;
 
     Settings settings;
     Queue queue;
@@ -61,9 +68,9 @@ public class MainActivity extends AppCompatActivity {
         textViewQueueLength = findViewById(R.id.textViewQueueLength);
         textViewQueueEnd = findViewById(R.id.textViewQueueEnd);
         recyclerView = findViewById(R.id.recyclerView);
-
-
-
+        toggleGroup = findViewById(R.id.toggleGroup);
+        btnYes = findViewById(R.id.btnYes);
+        btnNo = findViewById(R.id.btnNo);
 
         context = this;
 
@@ -259,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
     public void onDebug(View view) {
 
         settings.setAcceptingNewPersons(true);
-        //toggleQueue.setChecked(true);
         final int random = new Random().nextInt((5598547 - 5564787) + 1) + 5564787;
         phoneNumber=String.valueOf(random);
 
@@ -269,4 +275,36 @@ public class MainActivity extends AppCompatActivity {
         if(settings.isEndingCalls())
             endCurrentCall();
     }
+
+    public void onToggle(View view) {
+
+        int toggledId = toggleGroup.getCheckedButtonId();
+
+        if (toggledId == btnYes.getId() ) {
+
+            settings.setAcceptingNewPersons(true);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+            builder.setTitle("Please set approximate queue time!");
+            builder.setMessage("To help calculate estimated queue time for each person, please set approximate time that will take for one customer!");
+            final View customLayout = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
+            builder.setView(customLayout);
+            builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    EditText editText = customLayout.findViewById(R.id.editText);
+
+                    if (!String.valueOf(editText.getText()).equals(""))
+                        settings.setUserEstimatedQueueTime(Integer.valueOf(String.valueOf(editText.getText())));
+                    else
+                        settings.setUserEstimatedQueueTime(5);
+                }
+            });
+            builder.show();
+        }
+
+        else if (toggledId == btnNo.getId() ) {
+            settings.setAcceptingNewPersons(false);
+        }
+    }
+
 }

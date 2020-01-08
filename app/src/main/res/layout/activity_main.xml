@@ -92,9 +92,13 @@
 
         <com.google.android.material.button.MaterialButtonToggleGroup
 
-            android:id="@+id/toggle_button_group"
+            android:id="@+id/toggleGroup"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            app:checkedButton="@+id/btnNo"
+            >
 
 
 
@@ -102,13 +106,17 @@
 
             <Button
                 style="?attr/materialButtonOutlinedStyle"
+                android:id="@+id/btnYes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="onToggle"
                 android:text="yes"/>
             <Button
                 style="?attr/materialButtonOutlinedStyle"
+                android:id="@+id/btnNo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="onToggle"
                 android:text="no"/>
 
 
@@ -237,13 +245,5 @@
         app:layout_constraintTop_toBottomOf="@+id/cardNext"
         android:layout_marginTop="4dp"
         />
-
-    <!--ListView
-        android:id="@+id/ListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@android:color/transparent"
-        /-->
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
