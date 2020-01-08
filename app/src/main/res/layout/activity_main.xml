@@ -37,7 +37,7 @@
                 android:textColor="@color/white" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/textViewQueueLength"
                 style="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,12 +59,12 @@
                 android:textColor="@color/white" />
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/textViewQueueEnd"
                 style="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="14:15"
+                android:text="-"
                 android:textColor="@color/white" />
 
         </LinearLayout>

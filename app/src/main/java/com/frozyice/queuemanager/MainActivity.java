@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     BroadcastReceiver Receiver;
     String phoneNumber;
 
-    private TextView textViewCurrent, textViewNext;
+    private TextView textViewCurrent, textViewNext, textViewQueueLength, textViewQueueEnd;
     private RecyclerView recyclerView;
 
     Settings settings;
@@ -58,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
 
         textViewCurrent = findViewById(R.id.textViewCurrent);
         textViewNext = findViewById(R.id.textViewNext);
+        textViewQueueLength = findViewById(R.id.textViewQueueLength);
+        textViewQueueEnd = findViewById(R.id.textViewQueueEnd);
         recyclerView = findViewById(R.id.recyclerView);
+
 
 
 
@@ -168,10 +171,15 @@ public class MainActivity extends AppCompatActivity {
         if (!queue.getCardList().isEmpty())
         {
             textViewNext.setText(queue.getCardList().get(0).getPhoneNumber());
+            textViewQueueLength.setText(String.valueOf(queue.getCardList().size()));
+            textViewQueueEnd.setText(queue.calculateEstimateTime(settings.getUserEstimatedQueueTime()));
         }
         else
         {
             textViewNext.setText("-");
+            textViewQueueLength.setText("0");
+            textViewQueueEnd.setText("-");
+
         }
 
         textViewCurrent.setText(queue.getCurrentPhoneNumber());
