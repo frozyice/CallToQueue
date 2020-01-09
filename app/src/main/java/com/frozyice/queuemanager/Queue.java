@@ -80,6 +80,10 @@ public class Queue {
 
     }
 
+    public int getNumberOfPeopleCalledIn() {
+        return NumberOfPeopleCalledIn;
+    }
+
     public int peopleBefore() {
         return CardList.size() - 1;
     }

@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
 
         int toggledId = toggleGroup.getCheckedButtonId();
 
-        if (toggledId == btnYes.getId() ) {
+        if ( toggledId == btnYes.getId() && queue.getNumberOfPeopleCalledIn()<5 ) {
 
             settings.setAcceptingNewPersons(true);
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
@@ -289,14 +289,18 @@ public class MainActivity extends AppCompatActivity {
             final View customLayout = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
             builder.setView(customLayout);
             builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+
+
                     EditText editText = customLayout.findViewById(R.id.editText);
 
                     if (!String.valueOf(editText.getText()).equals(""))
                         settings.setUserEstimatedQueueTime(Integer.valueOf(String.valueOf(editText.getText())));
                     else
                         settings.setUserEstimatedQueueTime(5);
+
                 }
             });
             builder.show();
@@ -307,4 +311,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        builder.setTitle("Do you like to close app?");
+        builder.setMessage("Customers will be not added to the queue and current queue will be lost.");
+        builder.setNegativeButton("No",null);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.show();
+    }
 }
