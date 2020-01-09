@@ -93,8 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         else
                             sendSms(phoneNumber,"Not accepting new people at the moment.");
 
-                        if(settings.isEndingCalls())
-                            endCurrentCall();
+                        endCurrentCall();
                     }
                 }
             }
@@ -269,11 +268,8 @@ public class MainActivity extends AppCompatActivity {
         final int random = new Random().nextInt((5598547 - 5564787) + 1) + 5564787;
         phoneNumber=String.valueOf(random);
 
-
         addToList(phoneNumber);
-
-        if(settings.isEndingCalls())
-            endCurrentCall();
+        endCurrentCall();
     }
 
     public void onToggle(View view) {

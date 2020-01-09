@@ -50,22 +50,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        toggleEndCalls = findViewById(R.id.toggleEndCalls);
-        if (settings.isEndingCalls())
-            toggleEndCalls.setChecked(true);
-        else
-            toggleEndCalls.setChecked(false);
-
-        toggleEndCalls.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    settings.setEndingCalls(true);
-                else
-                    settings.setEndingCalls(false);
-            }
-        });
-
         editTextQueueTime = findViewById(R.id.editTextQueueTime);
 
         editTextQueueTime.setText(settings.getUserEstimatedQueueTime()/60+" min");
