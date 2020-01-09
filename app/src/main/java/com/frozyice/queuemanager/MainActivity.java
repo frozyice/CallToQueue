@@ -313,16 +313,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle("Do you like to close app?");
-        builder.setMessage("Customers will be not added to the queue and current queue will be lost.");
-        builder.setNegativeButton("No",null);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        builder.show();
+
+        if (settings.isAcceptingNewPersons() || queue.getCardList().size()!=0) {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+            builder.setTitle("Do you like to close app?");
+            builder.setMessage("Customers will be not added to the queue and current queue will be lost.");
+            builder.setNegativeButton("No", null);
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            builder.show();
+        }
+        else
+            finish();
     }
 }
