@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.StringTokenizer;
 
 public class Settings implements Serializable{
-    private boolean IsAcceptingNewPersons;
-    private int userEstimatedQueueTime;
+
     private String TextAddedToQueue;
     //private int AdaptiveEstimatedQueueTime;
 
@@ -45,28 +44,10 @@ public class Settings implements Serializable{
 
 
     public Settings(){
-        IsAcceptingNewPersons=false;
-        userEstimatedQueueTime=300;
         TextAddedToQueue = "Added to queue! There are [people] people before You. Your estimated time: [time]";
     }
 
-    public boolean isAcceptingNewPersons() {
-        return IsAcceptingNewPersons;
-    }
-
-    public void setAcceptingNewPersons(boolean acceptingNewPersons) {
-        IsAcceptingNewPersons = acceptingNewPersons;
-    }
-
-    public int getUserEstimatedQueueTime() {
-        return userEstimatedQueueTime;
-    }
-
-    public void setUserEstimatedQueueTime(int estimatedQueueTime) {
-        userEstimatedQueueTime = estimatedQueueTime*60;
-    }
-
-    public String getTextAddedToQueue() {
+     public String getTextAddedToQueue() {
         return TextAddedToQueue;
     }
 

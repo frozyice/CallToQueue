@@ -18,14 +18,35 @@ public class Queue {
     private LocalTime QueueStartTime;
     private LocalTime RecallTime;
 
+    private boolean IsAcceptingNewPersons;
+    private int userEstimatedQueueTime;
+
 
     public void setRecallTime() {
         RecallTime = new LocalTime();
     }
 
+    public boolean isAcceptingNewPersons() {
+        return IsAcceptingNewPersons;
+    }
+
+    public void setAcceptingNewPersons(boolean acceptingNewPersons) {
+        IsAcceptingNewPersons = acceptingNewPersons;
+    }
+
+    public int getUserEstimatedQueueTime() {
+        return userEstimatedQueueTime;
+    }
+
+    public void setUserEstimatedQueueTime(int userEstimatedQueueTime) {
+        this.userEstimatedQueueTime = userEstimatedQueueTime*60;
+    }
+
     public Queue() {
         CardList = new ArrayList<>();
         NumberOfPeopleCalledIn = 0;
+        IsAcceptingNewPersons=false;
+        userEstimatedQueueTime=300;
     }
 
     public String getCurrentPhoneNumber() {

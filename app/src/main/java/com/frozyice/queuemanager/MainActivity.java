@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private MaterialButtonToggleGroup toggleGroup;
     private Button btnYes, btnNo;
 
-    Settings settings;
     Queue queue;
 
     @Override
@@ -60,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.wtf("PrintOut", "onCreate"); //debug
 
-        settings = new Settings();
         queue = new Queue();
 
         textViewCurrent = findViewById(R.id.textViewCurrent);
@@ -88,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
                         phoneNumber=intent.getStringExtra("number");
 
-                        if (settings.isAcceptingNewPersons())
+                        if (queue.isAcceptingNewPersons())
                             addToList(phoneNumber);
                         else
                             sendSms(phoneNumber,"Not accepting new people at the moment.");
@@ -105,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(Receiver);
-        Toast.makeText(context, "App is closed", Toast.LENGTH_LONG).show();
     }
 
     private void endCurrentCall() {
@@ -161,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             updateView();
 
             Toast.makeText(context, phoneNumber+ " added to queue!", Toast.LENGTH_LONG).show();
-            sendSms(phoneNumber,"Added to queue! There are "+ queue.peopleBefore() + " people before You. Your estimated time: "+ queue.calculateEstimateTime(settings.getUserEstimatedQueueTime()));
+            sendSms(phoneNumber,"Added to queue! There are "+ queue.peopleBefore() + " people before You. Your estimated time: "+ queue.calculateEstimateTime(queue.getUserEstimatedQueueTime()));
         }
         else sendSms(phoneNumber,"Already in queue! Keep Calm!");
     }
@@ -178,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         {
             textViewNext.setText(queue.getCardList().get(0).getPhoneNumber());
             textViewQueueLength.setText(String.valueOf(queue.getCardList().size()));
-            textViewQueueEnd.setText(queue.calculateEstimateTime(settings.getUserEstimatedQueueTime()));
+            textViewQueueEnd.setText(queue.calculateEstimateTime(queue.getUserEstimatedQueueTime()));
         }
         else
         {
@@ -232,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void onSettings(View view) {
+/*    public void onSettings(View view) {
         gotoSettings();
     }
 
@@ -259,12 +255,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-    }
+    }*/
 
 
     public void onDebug(View view) {
 
-        settings.setAcceptingNewPersons(true);
+        queue.setAcceptingNewPersons(true);
         final int random = new Random().nextInt((5598547 - 5564787) + 1) + 5564787;
         phoneNumber=String.valueOf(random);
 
@@ -278,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
         if ( toggledId == btnYes.getId() && queue.getNumberOfPeopleCalledIn()<5 ) {
 
-            settings.setAcceptingNewPersons(true);
+            queue.setAcceptingNewPersons(true);
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
             builder.setTitle("Please set approximate queue time!");
             builder.setMessage("To help calculate estimated queue time for each person, please set approximate time that will take for one customer!");
@@ -293,9 +289,9 @@ public class MainActivity extends AppCompatActivity {
                     EditText editText = customLayout.findViewById(R.id.editText);
 
                     if (!String.valueOf(editText.getText()).equals(""))
-                        settings.setUserEstimatedQueueTime(Integer.valueOf(String.valueOf(editText.getText())));
+                        queue.setUserEstimatedQueueTime(Integer.valueOf(String.valueOf(editText.getText())));
                     else
-                        settings.setUserEstimatedQueueTime(5);
+                        queue.setUserEstimatedQueueTime(5);
 
                 }
             });
@@ -303,14 +299,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         else if (toggledId == btnNo.getId() ) {
-            settings.setAcceptingNewPersons(false);
+            queue.setAcceptingNewPersons(false);
         }
     }
 
     @Override
     public void onBackPressed() {
 
-        if (settings.isAcceptingNewPersons() || queue.getCardList().size()!=0) {
+        if (queue.isAcceptingNewPersons() || queue.getCardList().size()!=0) {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
             builder.setTitle("Do you like to close app?");
             builder.setMessage("Customers will be not added to the queue and current queue will be lost.");

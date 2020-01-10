@@ -18,8 +18,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     TextView textView;
     Settings settings;
-    ToggleButton toggleQueue;
-    ToggleButton toggleEndCalls;
     EditText editTextQueueTime;
     EditText editTextAddedToQueue;
     boolean hasQueueTimeChanged=false;
@@ -32,27 +30,9 @@ public class SettingsActivity extends AppCompatActivity {
         settings = (Settings) getIntent().getSerializableExtra("settings");
         textView = findViewById(R.id.textViewCurrent);
 
-        toggleQueue = findViewById(R.id.toggleQueue);
-        if (settings.isAcceptingNewPersons())
-            toggleQueue.setChecked(true);
-        else
-            toggleQueue.setChecked(false);
 
-        toggleQueue.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if (isChecked)
-                    settings.setAcceptingNewPersons(true);
-                else
-                    settings.setAcceptingNewPersons(false);
-            }
-        });
 
         editTextQueueTime = findViewById(R.id.editTextQueueTime);
-
-        editTextQueueTime.setText(settings.getUserEstimatedQueueTime()/60+" min");
 
 
         editTextQueueTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -90,7 +70,6 @@ public class SettingsActivity extends AppCompatActivity {
         if (hasQueueTimeChanged && !String.valueOf(editTextQueueTime.getText()).isEmpty())
         {
             int queueTime = Integer.valueOf(String.valueOf(editTextQueueTime.getText()));
-            settings.setUserEstimatedQueueTime(queueTime*60);
         }
 
         settings.setTextAddedToQueue(String.valueOf(editTextAddedToQueue.getText()));
