@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             updateView();
 
             Toast.makeText(context, phoneNumber+ " added to queue!", Toast.LENGTH_LONG).show();
-            sendSms(phoneNumber,"Added to queue! There are "+ queue.peopleBefore() + " people before You. Your estimated time: "+ queue.calculateEstimateTime(queue.getUserEstimatedQueueTime()));
+            sendSms(phoneNumber,"Added to queue! There are "+ queue.peopleBefore() + " people before You. Your estimated call in time: "+ queue.calculateEstimateTime(queue.getUserEstimatedQueueTime()));
         }
         else sendSms(phoneNumber,"Already in queue! Keep Calm!");
     }
@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!queue.getCardList().isEmpty()) {
             Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
-            sendSms(queue.getCardList().get(0).getPhoneNumber(), "Your up! It is your turn now!");
+            sendSms(queue.getCardList().get(0).getPhoneNumber(), "You are up!");
 
             queue.setNumberOfPeopleCalledIn();
             queue.setAdaptiveEstimatedQueueTime();
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRecall(View view) {
         if (queue.getCurrentPhoneNumber()!=null) {
             queue.setRecallTime();
-            sendSms(queue.getCurrentPhoneNumber(), "Your up! It is your turn now!");
+            sendSms(queue.getCurrentPhoneNumber(), "You are up!");
             Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
         }
     }
@@ -276,8 +276,8 @@ public class MainActivity extends AppCompatActivity {
 
             queue.setAcceptingNewPersons(true);
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-            builder.setTitle("Please set approximate queue time!");
-            builder.setMessage("To help calculate estimated queue time for each person, please set approximate time that will take for one customer!");
+            builder.setTitle("Please set queue time!");
+            builder.setMessage("To help calculate estimated queue time, please set approximate time for one person!");
             final View customLayout = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
             builder.setView(customLayout);
             builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -308,8 +308,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (queue.isAcceptingNewPersons() || queue.getCardList().size()!=0) {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-            builder.setTitle("Do you like to close app?");
-            builder.setMessage("Customers will be not added to the queue and current queue will be lost.");
+            builder.setTitle("Do you like to close the app?");
+            builder.setMessage("People will be not added to the queue and current queue will be lost.");
             builder.setNegativeButton("No", null);
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
@@ -321,5 +321,13 @@ public class MainActivity extends AppCompatActivity {
         }
         else
             finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!this.isFinishing()){
+            Toast.makeText(context, "!isFinishing", Toast.LENGTH_LONG).show(); //debug
+        }
     }
 }
