@@ -90,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
                         else
                             sendSms(phoneNumber,"Not accepting new people at the moment.");
 
-                        endCurrentCall();
+                        if (queue.isEndingCalls())
+                            endCurrentCall();
                     }
                 }
             }
@@ -265,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
         phoneNumber=String.valueOf(random);
 
         addToList(phoneNumber);
-        endCurrentCall();
     }
 
     public void onToggle(View view) {
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
             queue.setAcceptingNewPersons(true);
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
             builder.setTitle("Please set queue time!");
-            builder.setMessage("To help calculate estimated queue time, please set approximate time for one person!");
+            builder.setMessage("To help calculate estimated queue time, please set approximate time for one person! App will calculate adaptive queue time, if it has enough data.");
             final View customLayout = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
             builder.setView(customLayout);
             builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -327,7 +327,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if (!this.isFinishing()){
-            Toast.makeText(context, "!isFinishing", Toast.LENGTH_LONG).show(); //debug
+            queue.setEndingCalls(false);
+            if(queue.isAcceptingNewPersons())
+            {
+                Toast.makeText(context, "Queue still open! Accepting new people!", Toast.LENGTH_LONG).show();
+            }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        queue.setEndingCalls(true);
     }
 }

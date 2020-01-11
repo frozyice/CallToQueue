@@ -19,8 +19,16 @@ public class Queue {
     private LocalTime RecallTime;
 
     private boolean IsAcceptingNewPersons;
+    private boolean IsEndingCalls;
     private int userEstimatedQueueTime;
 
+
+    public Queue() {
+        CardList = new ArrayList<>();
+        NumberOfPeopleCalledIn = 0;
+        IsAcceptingNewPersons=false;
+        userEstimatedQueueTime=300;
+    }
 
     public void setRecallTime() {
         RecallTime = new LocalTime();
@@ -42,11 +50,12 @@ public class Queue {
         this.userEstimatedQueueTime = userEstimatedQueueTime*60;
     }
 
-    public Queue() {
-        CardList = new ArrayList<>();
-        NumberOfPeopleCalledIn = 0;
-        IsAcceptingNewPersons=false;
-        userEstimatedQueueTime=300;
+    public boolean isEndingCalls() {
+        return IsEndingCalls;
+    }
+
+    public void setEndingCalls(boolean endingCalls) {
+        IsEndingCalls = endingCalls;
     }
 
     public String getCurrentPhoneNumber() {
