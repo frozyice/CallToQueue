@@ -67,6 +67,14 @@
                 android:text="-"
                 android:textColor="@color/white" />
 
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                app:srcCompat="@drawable/ic_favorite_24dp"
+                android:onClick="onDonate"/>
         </LinearLayout>
 
 

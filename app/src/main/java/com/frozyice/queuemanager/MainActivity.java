@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
@@ -361,4 +362,9 @@ public class MainActivity extends AppCompatActivity {
         db.close();
     }
 
+    public void onDonate(View view) {
+        Intent browse = new Intent( Intent.ACTION_VIEW , Uri.parse( "https://www.paypal.me/Karmo" ) );
+
+        startActivity( browse );
+    }
 }
