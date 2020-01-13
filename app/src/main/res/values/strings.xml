@@ -6,4 +6,25 @@
     <string name="qOpen">Queue Open</string>
     <string name="settings">settings</string>
     <string name="save">Save</string>
+
+
+    <string name="title_activity_welcome">Home Screen</string>
+    <string name="nextWelcome">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">OK</string>
+
+    <string name="slide_1_title">Call</string>
+    <string name="slide_1_desc">Let people call this number</string>
+
+    <string name="slide_2_title">Add</string>
+    <string name="slide_2_desc">They are added to queue</string>
+
+    <string name="slide_3_title">Send</string>
+    <string name="slide_3_desc">SMS is sent with info</string>
+
+    <string name="slide_4_title">App needs permissions</string>
+    <string name="slide_4_desc">Please grant permissions to see who is calling, end calls and send SMS. Your operator may charge extra for SMS.</string>
+
+    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
+    <string name="play_again">Play Again</string>
 </resources>

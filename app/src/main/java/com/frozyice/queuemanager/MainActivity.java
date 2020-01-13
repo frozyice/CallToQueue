@@ -140,17 +140,17 @@ public class MainActivity extends AppCompatActivity {
 
         List<String> listPermissionsNeeded = new ArrayList<>();
 
-        if (sendSmsPremission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.SEND_SMS);
+        if (readCallLogPremission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_CALL_LOG);
         }
         if (readPhoneStatePremission != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
         }
-        if (readCallLogPremission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_CALL_LOG);
-        }
         if (callPhonePremission != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.CALL_PHONE);
+        }
+        if (sendSmsPremission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.SEND_SMS);
         }
 
         if (!listPermissionsNeeded.isEmpty()) {
