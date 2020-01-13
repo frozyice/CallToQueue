@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnYes, btnNo;
 
     Queue queue;
+    DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -70,6 +71,21 @@ public class MainActivity extends AppCompatActivity {
         btnNo = findViewById(R.id.btnNo);
 
         context = this;
+
+        db = new DatabaseHelper(this);
+        db.open();
+        List<String> PhonenumberList = new ArrayList<>();
+        PhonenumberList = db.read();
+        if (PhonenumberList.size()!=0)
+        {
+            for (String phoneNumber : PhonenumberList)
+            {
+                queue.addToCardList(phoneNumber);
+            }
+            updateView();
+        }
+
+
 
         checkAndRequestPermissions();
 
@@ -97,12 +113,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         registerReceiver(Receiver, filter);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(Receiver);
     }
 
     private void endCurrentCall() {
@@ -154,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!queue.cardListContains(phoneNumber)) {
             queue.addToCardList(phoneNumber);
+            db.insert(phoneNumber);
 
             updateView();
 
@@ -206,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
             queue.setCurrentPhoneNumber(queue.getCardList().get(0).getPhoneNumber());
             queue.removeFromPhoneNumbersList();
+            db.deleteFirst();
             if (!queue.getCardList().isEmpty()){
                 sendSms(queue.getCardList().get(0).getPhoneNumber(), "Get ready, you are next in queue!");
             }
@@ -227,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
         }
     }
+
 
 
 /*    public void onSettings(View view) {
@@ -258,7 +271,6 @@ public class MainActivity extends AppCompatActivity {
 
     }*/
 
-
     public void onDebug(View view) {
 
         queue.setAcceptingNewPersons(true);
@@ -277,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
             queue.setAcceptingNewPersons(true);
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
             builder.setTitle("Set estimated time for one person!");
-            builder.setMessage("To help calculate queue time, please set estimated time for one person! App will calculate queue time, if it has enough data.");
+            builder.setMessage("To help calculate queue time, please set estimated time for one person! App will calculate more precise queue time, if it has enough data.");
             final View customLayout = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
             builder.setView(customLayout);
             builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -314,6 +326,7 @@ public class MainActivity extends AppCompatActivity {
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    db.deleteAll();
                     finish();
                 }
             });
@@ -340,4 +353,12 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         queue.setEndingCalls(true);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(Receiver);
+        db.close();
+    }
+
 }
