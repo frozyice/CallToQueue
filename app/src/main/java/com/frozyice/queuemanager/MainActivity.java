@@ -276,8 +276,8 @@ public class MainActivity extends AppCompatActivity {
 
             queue.setAcceptingNewPersons(true);
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-            builder.setTitle("Please set queue time!");
-            builder.setMessage("To help calculate estimated queue time, please set approximate time for one person! App will calculate adaptive queue time, if it has enough data.");
+            builder.setTitle("Set estimated time for one person!");
+            builder.setMessage("To help calculate queue time, please set estimated time for one person! App will calculate queue time, if it has enough data.");
             final View customLayout = getLayoutInflater().inflate(R.layout.dialog_edittext, null);
             builder.setView(customLayout);
             builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
