@@ -1,4 +1,4 @@
-package com.frozyice.queuemanager;
+package com.frozyice.callToQueue;
 
 import android.content.Context;
 import android.content.SharedPreferences;

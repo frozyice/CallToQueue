@@ -1,4 +1,4 @@
-package com.frozyice.queuemanager;
+package com.frozyice.callToQueue;
 
 import android.view.LayoutInflater;
 import android.view.View;

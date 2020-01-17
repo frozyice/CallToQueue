@@ -1,10 +1,9 @@
-package com.frozyice.queuemanager;
+package com.frozyice.callToQueue;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 public class PhoneStateReceiver extends BroadcastReceiver {
     @Override

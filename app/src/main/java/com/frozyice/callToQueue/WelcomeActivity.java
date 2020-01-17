@@ -1,4 +1,4 @@
-package com.frozyice.queuemanager;
+package com.frozyice.callToQueue;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,8 +18,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import com.frozyice.queuemanager.PrefManager;
 
 public class WelcomeActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.frozyice.queuemanager;
+package com.frozyice.callToQueue;
 
 class Card {
     private String phoneNumber;

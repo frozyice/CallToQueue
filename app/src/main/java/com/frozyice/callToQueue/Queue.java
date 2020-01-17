@@ -1,4 +1,4 @@
-package com.frozyice.queuemanager;
+package com.frozyice.callToQueue;
 
 import org.joda.time.LocalTime;
 import org.joda.time.Seconds;

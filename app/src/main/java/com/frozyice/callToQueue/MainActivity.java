@@ -1,4 +1,4 @@
-package com.frozyice.queuemanager;
+package com.frozyice.callToQueue;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
