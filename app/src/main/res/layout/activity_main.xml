@@ -12,16 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView9"
@@ -29,11 +24,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right"
-
-
-                android:text="Queue lenght: "
-
+                android:gravity="end"
+                android:text="@string/queue_length"
                 android:textColor="@color/white" />
 
             <TextView
@@ -42,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="0"
+                android:text="@string/value_zero"
                 android:textColor="@color/white" />
 
             <TextView
@@ -51,11 +43,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="right"
-
-
-                android:text="Queue end: "
-
+                android:gravity="end"
+                android:text="@string/queue_end"
                 android:textColor="@color/white" />
 
             <TextView
@@ -64,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="-"
+                android:text="@string/value_dash"
                 android:textColor="@color/white" />
 
             <ImageView
@@ -73,12 +62,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
+                android:focusable="true"
                 app:srcCompat="@drawable/ic_favorite_24dp"
-                android:onClick="onDonate"/>
+                android:onClick="onDonate"
+                android:contentDescription="@string/donate" />
         </LinearLayout>
-
-
-    </LinearLayout>
 
     <LinearLayout
         android:padding="16dp"
@@ -93,9 +81,9 @@
             android:id="@+id/textView14"
             style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Accept new people"
+            android:text="@string/accept_new_people"
             android:textColor="@color/colorPrimary" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
@@ -118,14 +106,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onToggle"
-                android:text="yes"/>
+                android:text="@string/yes"/>
             <Button
                 style="?attr/materialButtonOutlinedStyle"
                 android:id="@+id/btnNo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onToggle"
-                android:text="no"/>
+                android:text="@string/no"/>
 
 
 
@@ -159,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
-                android:text="CURRENT CUSTOMER"
+                android:text="@string/current_customer"
                 android:textColor="@color/colorPrimary"/>
 
             <TextView
@@ -169,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
-                android:text="-"
+                android:text="@string/value_dash"
                 android:textColor="@color/colorPrimary"/>
 
             <Button
@@ -179,8 +167,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:onClick="onDebug"
-                android:text="recall"
+                android:onClick="onRecall"
+                android:text="@string/recall"
                 app:strokeColor="@color/colorPrimary"/>
 
 
@@ -218,7 +206,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
-                android:text="NEXT CUSTOMER"
+                android:text="@string/next_customer"
                 android:textColor="@color/colorPrimary"/>
 
             <TextView
@@ -228,7 +216,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
-                android:text="-"
+                android:text="@string/value_dash"
                 android:textColor="@color/colorPrimary"/>
 
             <Button
@@ -238,7 +226,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:onClick="onNext"
-                android:text="call in" />
+                android:text="@string/call_in" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

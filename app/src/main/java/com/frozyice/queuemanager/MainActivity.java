@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.wtf("PrintOut", "onCreate"); //debug
+
 
         queue = new Queue();
 
@@ -85,8 +84,6 @@ public class MainActivity extends AppCompatActivity {
             }
             updateView();
         }
-
-
 
         checkAndRequestPermissions();
 
@@ -202,8 +199,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendSms(String phoneNumber, String message) {
         SmsManager smgr = SmsManager.getDefault();
-        //smgr.sendTextMessage(phoneNumber,null,message,null,null);
-        System.out.println("[SMS] to: "+phoneNumber+" msg: "+message); //debug
+        smgr.sendTextMessage(phoneNumber,null,message,null,null);
+        //System.out.println("[SMS] to: "+phoneNumber+" msg: "+message); //debug
     }
 
 
@@ -242,39 +239,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-/*    public void onSettings(View view) {
-        gotoSettings();
-    }
-
-    private void gotoSettings(){
-        Intent intent = new Intent(this, SettingsActivity.class);
-        intent.putExtra("settings", settings);
-        startActivityForResult(intent,42);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 42)
-        {
-            if (resultCode == RESULT_OK)
-            {
-                Bundle bundle = data.getExtras();
-
-                if (bundle!=null)
-                {
-                    settings = (Settings) bundle.getSerializable("settingsBack");
-                }
-            }
-        }
-
-    }*/
-
     public void onDebug(View view) {
 
-        queue.setAcceptingNewPersons(true);
         final int random = new Random().nextInt((5598547 - 5564787) + 1) + 5564787;
         phoneNumber=String.valueOf(random);
 

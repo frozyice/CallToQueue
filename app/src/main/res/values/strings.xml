@@ -1,12 +1,5 @@
 <resources>
     <string name="app_name">Call to Queue</string>
-    <string name="next">NEXT!</string>
-    <string name="recall">Recall Current</string>
-    <string name="qClosed">Queue Closed</string>
-    <string name="qOpen">Queue Open</string>
-    <string name="settings">settings</string>
-    <string name="save">Save</string>
-
 
     <string name="title_activity_welcome">Home Screen</string>
     <string name="nextWelcome">NEXT</string>
@@ -27,4 +20,16 @@
 
     <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
     <string name="play_again">Play Again</string>
+    <string name="queue_length">Queue length:</string>
+    <string name="value_zero">0</string>
+    <string name="queue_end">Queue end:</string>
+    <string name="value_dash">-</string>
+    <string name="accept_new_people">Accept new people</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+    <string name="current_customer">CURRENT CUSTOMER</string>
+    <string name="next_customer">NEXT CUSTOMER</string>
+    <string name="recall">recall</string>
+    <string name="call_in">call in</string>
+    <string name="donate">Donate</string>
 </resources>

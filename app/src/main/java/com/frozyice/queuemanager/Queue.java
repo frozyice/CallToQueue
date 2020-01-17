@@ -122,12 +122,8 @@ public class Queue {
         int seconds;
         if (NumberOfPeopleCalledIn < 5) {
             seconds = userEstimatedQueueTime * peopleBefore();
-            System.out.println("seconds = userEstimatedQueueTime * peopleBefore()"); //debug
-            System.out.println(seconds+" = "+userEstimatedQueueTime+" * "+peopleBefore()); //debug
         } else {
             seconds = AdaptiveEstimatedQueueTime * peopleBefore();
-            System.out.println("seconds = AdaptiveEstimatedQueueTime * peopleBefore()"); //debug
-            System.out.println(seconds+" = "+AdaptiveEstimatedQueueTime+" * "+peopleBefore()); //debug
         }
         LocalTime now = new LocalTime();
         DateTimeFormatter timeFormat = DateTimeFormat.forPattern("HH:mm");

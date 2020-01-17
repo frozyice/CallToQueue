@@ -139,7 +139,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 btnSkip.setVisibility(View.GONE);
             } else {
                 // still pages are left
-                btnNext.setText(getString(R.string.next));
+                btnNext.setText(getString(R.string.nextWelcome));
                 btnSkip.setVisibility(View.VISIBLE);
             }
         }
