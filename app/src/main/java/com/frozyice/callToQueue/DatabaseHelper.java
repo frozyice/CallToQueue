@@ -64,7 +64,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<String> PhonenumberList = new ArrayList<>();
 
         if(cursor != null) {
-            cursor.moveToFirst();
 
             while (cursor.moveToNext()) {
                 PhonenumberList.add(cursor.getString((cursor.getColumnIndex(PHONENUMBER))));

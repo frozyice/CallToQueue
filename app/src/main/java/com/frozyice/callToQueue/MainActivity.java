@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     BroadcastReceiver Receiver;
     String phoneNumber;
 
-    private TextView textViewCurrent, textViewNext, textViewQueueLength, textViewQueueEnd;
+    private TextView textViewQueueLength, textViewQueueEnd;
     private RecyclerView recyclerView;
     private MaterialButtonToggleGroup toggleGroup;
     private Button btnYes, btnNo;
@@ -57,12 +57,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         queue = new Queue();
 
-        textViewCurrent = findViewById(R.id.textViewCurrent);
-        textViewNext = findViewById(R.id.textViewNext);
         textViewQueueLength = findViewById(R.id.textViewQueueLength);
         textViewQueueEnd = findViewById(R.id.textViewQueueEnd);
         recyclerView = findViewById(R.id.recyclerView);
@@ -74,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         db = new DatabaseHelper(this);
         db.open();
-        List<String> PhonenumberList = new ArrayList<>();
+        List<String> PhonenumberList;
         PhonenumberList = db.read();
         if (PhonenumberList.size()!=0)
         {
@@ -82,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
             {
                 queue.addToCardList(phoneNumber);
             }
-            updateView();
         }
+        updateView();
 
         checkAndRequestPermissions();
 
@@ -160,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void addToList(String phoneNumber) {
 
+        if (queue.getCardList().isEmpty())
+        {
+            queue.addToCardList("");
+            db.insert("");
+        }
         if (!queue.cardListContains(phoneNumber)) {
             queue.addToCardList(phoneNumber);
             db.insert(phoneNumber);
@@ -167,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
             updateView();
 
             Toast.makeText(context, phoneNumber+ " added to queue!", Toast.LENGTH_LONG).show();
-            sendSms(phoneNumber,"Added to queue! There are "+ queue.peopleBefore() + " people before You. Your estimated call in time: "+ queue.calculateEstimateTime(queue.getUserEstimatedQueueTime()));
+            sendSms(phoneNumber,"Added to queue! There are "+ queue.peopleBefore() + " people before You. Your estimated call in time: "+ queue.calculateEstimateTime(queue.peopleBefore()));
         }
         else sendSms(phoneNumber,"Already in queue! Keep Calm!");
     }
@@ -180,21 +181,17 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        if (!queue.getCardList().isEmpty())
+        if (queue.getCardList().size()>1)
         {
-            textViewNext.setText(queue.getCardList().get(0).getPhoneNumber());
-            textViewQueueLength.setText(String.valueOf(queue.getCardList().size()));
-            textViewQueueEnd.setText(queue.calculateEstimateTime(queue.getUserEstimatedQueueTime()));
+            textViewQueueLength.setText(String.valueOf(queue.getCardList().size()-1));
+            textViewQueueEnd.setText(queue.calculateEstimateTime(queue.peopleTotal()));
         }
         else
         {
-            textViewNext.setText("-");
             textViewQueueLength.setText("0");
             textViewQueueEnd.setText("-");
-
         }
 
-        textViewCurrent.setText(queue.getCurrentPhoneNumber());
     }
 
     private void sendSms(String phoneNumber, String message) {
@@ -205,37 +202,24 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onNext(View view) {
-
-        if (!queue.getCardList().isEmpty()) {
-            Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
-            sendSms(queue.getCardList().get(0).getPhoneNumber(), "You are up!");
-
-            queue.setNumberOfPeopleCalledIn();
-            queue.setAdaptiveEstimatedQueueTime();
-
-            queue.setCurrentPhoneNumber(queue.getCardList().get(0).getPhoneNumber());
-            queue.removeFromPhoneNumbersList();
-            db.deleteFirst();
-            if (!queue.getCardList().isEmpty()){
-                sendSms(queue.getCardList().get(0).getPhoneNumber(), "Get ready, you are next in queue!");
-            }
-
-            updateView();
-
-        }
-        else
-        {
-            Toast.makeText(context, "No people in queue!", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
+        sendSms(queue.getCardList().get(1).getPhoneNumber(), "You are up!");
+        if (queue.getCardList().size()>2){
+            sendSms(queue.getCardList().get(2).getPhoneNumber(), "Get ready, you are next in queue!");
         }
 
+        queue.setNumberOfPeopleCalledIn();
+        queue.setAdaptiveEstimatedQueueTime();
+        queue.removeFromPhoneNumbersList();
+        db.deleteFirst();
+
+        updateView();
     }
 
     public void onRecall(View view) {
-        if (queue.getCurrentPhoneNumber()!=null) {
-            queue.setRecallTime();
-            sendSms(queue.getCurrentPhoneNumber(), "You are up!");
-            Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
-        }
+        queue.setRecallTime();
+        sendSms(queue.getCardList().get(0).getPhoneNumber(), "You are up!");
+        Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
     }
 
 

@@ -10,7 +10,6 @@ import java.util.List;
 
 public class Queue {
 
-    private String CurrentPhoneNumber;
     private List<Card> CardList;
 
     private int NumberOfPeopleCalledIn;
@@ -20,14 +19,14 @@ public class Queue {
 
     private boolean IsAcceptingNewPersons;
     private boolean IsEndingCalls;
-    private int userEstimatedQueueTime;
+    private int UserEstimatedQueueTime;
 
 
     public Queue() {
         CardList = new ArrayList<>();
         NumberOfPeopleCalledIn = 0;
         IsAcceptingNewPersons=false;
-        userEstimatedQueueTime=300;
+        UserEstimatedQueueTime=5;
     }
 
     public void setRecallTime() {
@@ -43,11 +42,11 @@ public class Queue {
     }
 
     public int getUserEstimatedQueueTime() {
-        return userEstimatedQueueTime;
+        return UserEstimatedQueueTime;
     }
 
     public void setUserEstimatedQueueTime(int userEstimatedQueueTime) {
-        this.userEstimatedQueueTime = userEstimatedQueueTime*60;
+        this.UserEstimatedQueueTime = userEstimatedQueueTime;
     }
 
     public boolean isEndingCalls() {
@@ -58,39 +57,28 @@ public class Queue {
         IsEndingCalls = endingCalls;
     }
 
-    public String getCurrentPhoneNumber() {
-        return CurrentPhoneNumber;
-    }
 
-    public void setCurrentPhoneNumber(String currentPhoneNumber) {
-        CurrentPhoneNumber = currentPhoneNumber;
-    }
+
 
     public List<Card> getCardList() {
-        //return PhoneNumbersList;
         return CardList;
     }
 
     public void addToCardList(String phoneNumber) {
         Card card = new Card(phoneNumber);
-        //card.setPhoneNumber(phoneNumber);
         CardList.add(card);
-        //PhoneNumbersList.add(phoneNumber);
     }
 
     public boolean cardListContains(String phoneNumber) {
         for (Card card : CardList)
         {
             if (card.getPhoneNumber().equals(phoneNumber))
-            {
                 return true;
-            }
         }
         return false;
     }
 
     public void removeFromPhoneNumbersList() {
-        CurrentPhoneNumber=CardList.get(0).getPhoneNumber();
         CardList.remove(0);
     }
 
@@ -115,15 +103,20 @@ public class Queue {
     }
 
     public int peopleBefore() {
-        return CardList.size() - 1;
+        return CardList.size()-2;
     }
 
-    public String calculateEstimateTime(int userEstimatedQueueTime) {
+    public int peopleTotal() {
+        return CardList.size()-1;
+    }
+
+    public String calculateEstimateTime(int people) {
+
         int seconds;
         if (NumberOfPeopleCalledIn < 5) {
-            seconds = userEstimatedQueueTime * peopleBefore();
+            seconds = (UserEstimatedQueueTime*60) * people;
         } else {
-            seconds = AdaptiveEstimatedQueueTime * peopleBefore();
+            seconds = AdaptiveEstimatedQueueTime * people;
         }
         LocalTime now = new LocalTime();
         DateTimeFormatter timeFormat = DateTimeFormat.forPattern("HH:mm");
