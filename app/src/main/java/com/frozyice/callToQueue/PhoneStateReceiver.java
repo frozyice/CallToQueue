@@ -8,25 +8,19 @@ import android.telephony.TelephonyManager;
 public class PhoneStateReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        try
-        {
+        try {
             String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
             String incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
 
-            if (state.equals(TelephonyManager.EXTRA_STATE_RINGING))
-            {
-                if (incomingNumber!=null)
-                {
+            if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                if (incomingNumber != null) {
                     Intent local = new Intent();
                     local.setAction("service.to.activity.transfer");
                     local.putExtra("number", incomingNumber);
                     context.sendBroadcast(local);
                 }
             }
-        }
-
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }

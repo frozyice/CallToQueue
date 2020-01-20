@@ -12,15 +12,11 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String PHONENUMBER = "phoneNumber";
-
-
-    SQLiteDatabase db;
-
     private static final String DB_NAME = "CALLTOQUEUE.DB";
     private static final int DB_VERSION = 1;
     private static final String TABLE_NAME = "queuePhonenumbers";
-
     private static final String _ID = "_id";
+    SQLiteDatabase db;
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -41,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void dropTable (){
+    public void dropTable() {
         db.execSQL(
                 "DROP TABLE IF EXISTS " + TABLE_NAME
         );
@@ -50,20 +46,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long insert(String phoneNumber) {
         ContentValues values = new ContentValues();
         values.put(PHONENUMBER, phoneNumber);
-        long id = db.insert(TABLE_NAME,null,values);
+        long id = db.insert(TABLE_NAME, null, values);
         return id;
     }
 
 
+    public List<String> read() {
 
-    public List<String> read()
-    {
-
-        Cursor cursor = db.query(TABLE_NAME,null,null ,null  ,null   ,null,null);
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
 
         List<String> PhonenumberList = new ArrayList<>();
 
-        if(cursor != null) {
+        if (cursor != null) {
 
             while (cursor.moveToNext()) {
                 PhonenumberList.add(cursor.getString((cursor.getColumnIndex(PHONENUMBER))));
@@ -73,17 +67,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return PhonenumberList;
     }
 
-    public void deleteFirst()
-    {
-        Cursor cursor = db.query(TABLE_NAME,null,null,null,null,null,_ID,"1");
-        if(cursor != null)
+    public void deleteFirst() {
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, _ID, "1");
+        if (cursor != null)
             cursor.moveToFirst();
-        db.delete(TABLE_NAME, _ID+"=?", new String[]{String.valueOf(cursor.getLong(cursor.getColumnIndex(_ID)))});
+        db.delete(TABLE_NAME, _ID + "=?", new String[]{String.valueOf(cursor.getLong(cursor.getColumnIndex(_ID)))});
     }
 
-    public void deleteAll()
-    {
-        db.delete(TABLE_NAME,null,null);
+    public void deleteAll() {
+        db.delete(TABLE_NAME, null, null);
     }
 
     public void open() {

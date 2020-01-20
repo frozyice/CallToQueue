@@ -42,18 +42,15 @@ public class MainActivity extends AppCompatActivity {
     Context context;
     BroadcastReceiver Receiver;
     String phoneNumber;
-
+    Queue queue;
+    DatabaseHelper db;
     private TextView textViewQueueLength, textViewQueueEnd;
     private RecyclerView recyclerView;
     private MaterialButtonToggleGroup toggleGroup;
     private Button btnYes, btnNo;
 
-    Queue queue;
-    DatabaseHelper db;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -72,10 +69,8 @@ public class MainActivity extends AppCompatActivity {
         db.open();
         List<String> PhonenumberList;
         PhonenumberList = db.read();
-        if (PhonenumberList.size()!=0)
-        {
-            for (String phoneNumber : PhonenumberList)
-            {
+        if (PhonenumberList.size() != 0) {
+            for (String phoneNumber : PhonenumberList) {
                 queue.addToCardList(phoneNumber);
             }
         }
@@ -85,20 +80,19 @@ public class MainActivity extends AppCompatActivity {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("service.to.activity.transfer");
-        Receiver =  new BroadcastReceiver() {
+        Receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent != null) {
 
-                    if (intent.getStringExtra("number")!=null)
-                    {
+                    if (intent.getStringExtra("number") != null) {
 
-                        phoneNumber=intent.getStringExtra("number");
+                        phoneNumber = intent.getStringExtra("number");
 
                         if (queue.isAcceptingNewPersons())
                             addToList(phoneNumber);
                         else
-                            sendSms(phoneNumber,"Not accepting new people at the moment.");
+                            sendSms(phoneNumber, "Not accepting new people at the moment.");
 
                         if (queue.isEndingCalls())
                             endCurrentCall();
@@ -111,15 +105,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void endCurrentCall() {
         try {
-            TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             Class clazz = Class.forName(telephonyManager.getClass().getName());
             Method method = clazz.getDeclaredMethod("getITelephony");
             method.setAccessible(true);
             ITelephony telephonyService = (ITelephony) method.invoke(telephonyManager);
             telephonyService.endCall();
-        }
-
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -147,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),REQUEST_ID_MULTIPLE_PERMISSIONS);
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
             return false;
         }
         return true;
@@ -156,8 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addToList(String phoneNumber) {
 
-        if (queue.getCardList().isEmpty())
-        {
+        if (queue.getCardList().isEmpty()) {
             queue.addToCardList("");
             db.insert("");
         }
@@ -167,27 +158,24 @@ public class MainActivity extends AppCompatActivity {
 
             updateView();
 
-            Toast.makeText(context, phoneNumber+ " added to queue!", Toast.LENGTH_LONG).show();
-            sendSms(phoneNumber,"Added to queue! There are "+ queue.peopleBefore() + " people before You. Your estimated call in time: "+ queue.calculateEstimateTime(queue.peopleBefore()));
+            Toast.makeText(context, phoneNumber + " added to queue!", Toast.LENGTH_LONG).show();
+            sendSms(phoneNumber, "Added to queue! There are " + queue.peopleBefore() + " people before You. Your estimated call in time: " + queue.calculateEstimateTime(queue.peopleBefore()));
         }
-        else sendSms(phoneNumber,"Already in queue! Keep Calm!");
+        else sendSms(phoneNumber, "Already in queue! Keep Calm!");
     }
 
-    private void updateView()
-    {
+    private void updateView() {
         CardsAdapter adapter = new CardsAdapter(queue.getCardList());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
-        if (queue.getCardList().size()>1)
-        {
-            textViewQueueLength.setText(String.valueOf(queue.getCardList().size()-1));
+        if (queue.getCardList().size() > 1) {
+            textViewQueueLength.setText(String.valueOf(queue.getCardList().size() - 1));
             textViewQueueEnd.setText(queue.calculateEstimateTime(queue.peopleTotal()));
         }
-        else
-        {
+        else {
             textViewQueueLength.setText("0");
             textViewQueueEnd.setText("-");
         }
@@ -196,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendSms(String phoneNumber, String message) {
         SmsManager smgr = SmsManager.getDefault();
-        smgr.sendTextMessage(phoneNumber,null,message,null,null);
+        smgr.sendTextMessage(phoneNumber, null, message, null, null);
         //System.out.println("[SMS] to: "+phoneNumber+" msg: "+message); //debug
     }
 
@@ -204,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
     public void onNext(View view) {
         Toast.makeText(context, "SMS sent!", Toast.LENGTH_LONG).show();
         sendSms(queue.getCardList().get(1).getPhoneNumber(), "You are up!");
-        if (queue.getCardList().size()>2){
+        if (queue.getCardList().size() > 2) {
             sendSms(queue.getCardList().get(2).getPhoneNumber(), "Get ready, you are next in queue!");
         }
 
@@ -226,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
     public void onDebug(View view) {
 
         final int random = new Random().nextInt((5598547 - 5564787) + 1) + 5564787;
-        phoneNumber=String.valueOf(random);
+        phoneNumber = String.valueOf(random);
 
         addToList(phoneNumber);
     }
@@ -235,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
         int toggledId = toggleGroup.getCheckedButtonId();
 
-        if ( toggledId == btnYes.getId() && queue.getNumberOfPeopleCalledIn()<5 ) {
+        if (toggledId == btnYes.getId() && queue.getNumberOfPeopleCalledIn() < 5) {
 
             queue.setAcceptingNewPersons(true);
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
@@ -260,8 +248,7 @@ public class MainActivity extends AppCompatActivity {
             });
             builder.show();
         }
-
-        else if (toggledId == btnNo.getId() ) {
+        else if (toggledId == btnNo.getId()) {
             queue.setAcceptingNewPersons(false);
         }
     }
@@ -269,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        if (queue.isAcceptingNewPersons() || queue.getCardList().size()!=0) {
+        if (queue.isAcceptingNewPersons() || queue.getCardList().size() != 0) {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
             builder.setTitle("Do you like to close the app?");
             builder.setMessage("People will be not added to the queue and current queue will be lost.");
@@ -282,18 +269,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             builder.show();
-        }
-        else
+        } else
             finish();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (!this.isFinishing()){
+        if (!this.isFinishing()) {
             queue.setEndingCalls(false);
-            if(queue.isAcceptingNewPersons())
-            {
+            if (queue.isAcceptingNewPersons()) {
                 Toast.makeText(context, "Queue still open! Accepting new people!", Toast.LENGTH_LONG).show();
             }
         }
@@ -313,8 +298,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onDonate(View view) {
-        Intent browse = new Intent( Intent.ACTION_VIEW , Uri.parse( "https://www.paypal.me/Karmo" ) );
+        Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/Karmo"));
 
-        startActivity( browse );
+        startActivity(browse);
     }
 }

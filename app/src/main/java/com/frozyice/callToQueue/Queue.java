@@ -25,8 +25,8 @@ public class Queue {
     public Queue() {
         CardList = new ArrayList<>();
         NumberOfPeopleCalledIn = 0;
-        IsAcceptingNewPersons=false;
-        UserEstimatedQueueTime=5;
+        IsAcceptingNewPersons = false;
+        UserEstimatedQueueTime = 5;
     }
 
     public void setRecallTime() {
@@ -57,9 +57,6 @@ public class Queue {
         IsEndingCalls = endingCalls;
     }
 
-
-
-
     public List<Card> getCardList() {
         return CardList;
     }
@@ -70,8 +67,7 @@ public class Queue {
     }
 
     public boolean cardListContains(String phoneNumber) {
-        for (Card card : CardList)
-        {
+        for (Card card : CardList) {
             if (card.getPhoneNumber().equals(phoneNumber))
                 return true;
         }
@@ -85,13 +81,13 @@ public class Queue {
     public void setNumberOfPeopleCalledIn() {
         NumberOfPeopleCalledIn++;
 
-        if (RecallTime!=null) {
+        if (RecallTime != null) {
             LocalTime now = new LocalTime();
             int seconds = (Seconds.secondsBetween(RecallTime, now)).getSeconds();
             if (seconds < 60) {
                 if (AdaptiveEstimatedQueueTime > 60) {
                     NumberOfPeopleCalledIn--;
-                    RecallTime=null;
+                    RecallTime = null;
                 }
             }
         }
@@ -103,18 +99,18 @@ public class Queue {
     }
 
     public int peopleBefore() {
-        return CardList.size()-2;
+        return CardList.size() - 2;
     }
 
     public int peopleTotal() {
-        return CardList.size()-1;
+        return CardList.size() - 1;
     }
 
     public String calculateEstimateTime(int people) {
 
         int seconds;
         if (NumberOfPeopleCalledIn < 5) {
-            seconds = (UserEstimatedQueueTime*60) * people;
+            seconds = (UserEstimatedQueueTime * 60) * people;
         } else {
             seconds = AdaptiveEstimatedQueueTime * people;
         }
@@ -132,7 +128,6 @@ public class Queue {
         if (NumberOfPeopleCalledIn == 1) {
             QueueStartTime = now;
         }
-
         else {
             int seconds = (Seconds.secondsBetween(QueueStartTime, now)).getSeconds();
             if (seconds <= 0)
